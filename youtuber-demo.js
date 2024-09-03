@@ -35,7 +35,7 @@ app.get('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
     const youtuber = db.get(id) 
-    if (!(id in db.keys)){
+    if (!(id in db.keys())){
         res.json({
             message : '해당 유튜버를 찾지 못했습니다.'
         })
@@ -47,7 +47,12 @@ app.get('/youtubers/:id', (req, res) => {
 })
 
 app.get('/youtubers', (req, res) => {
-    res.json(db)
+    var channels = {}
+    db.forEach((value, key) => {
+        channels[key] = value
+    })
+    res.json(channels)
+    
 })
 
 app.post('/youtuber', (req, res)=>{
@@ -57,7 +62,8 @@ app.post('/youtuber', (req, res)=>{
         subscriber : subscriber,
         videoNum : videoNum
     }
-    db.set(id++, req.body)
+    let id = db.size()
+    db.set(id + 1, req.body)
     res.json({
         message: `${db.get(id-1).channelTitle} 님의 유튜버 생활을 응원합니다.`
     })
