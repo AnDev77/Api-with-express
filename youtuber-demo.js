@@ -35,7 +35,7 @@ app.get('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
     const youtuber = db.get(id) 
-    if ( youtuber == undefined){
+    if (!(id in db.keys)){
         res.json({
             message : '해당 유튜버를 찾지 못했습니다.'
         })
