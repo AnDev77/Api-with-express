@@ -25,7 +25,7 @@ app.get('/:id', function(req, res){
     let {id} = req.params
     id = parseInt(id)
 
-    if ( !(id in db.keys)){
+    if (!(id in db.keys)){
         res.json({
             mention : 'product is not found'
         })
