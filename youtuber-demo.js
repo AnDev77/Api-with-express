@@ -62,10 +62,10 @@ app.post('/youtuber', (req, res)=>{
         subscriber : subscriber,
         videoNum : videoNum
     }
-    let id = db.size()
-    db.set(id + 1, req.body)
+    let id = db.size() + 1
+    db.set(id , req.body)
     res.json({
-        message: `${db.get(id-1).channelTitle} 님의 유튜버 생활을 응원합니다.`
+        message: `${db.get(id).channelTitle} 님의 유튜버 생활을 응원합니다.`
     })
 
 })
