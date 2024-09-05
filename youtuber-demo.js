@@ -23,7 +23,7 @@ let youtuber3 = {
     subscriber :'78만명',
     videoNum :  463
 }
-var id = 1
+let id = 1
 db = new Map()
 db.set(id++, youtuber1)
 
@@ -34,9 +34,11 @@ db.set(id++, youtuber3)
 app.get('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
+
     const youtuber = db.get(id) 
+    
     if (db.get(id) == undefined){
-        res.json({
+        res.status(404).json({
             message : '해당 유튜버를 찾지 못했습니다.'
         })
     }
@@ -47,27 +49,32 @@ app.get('/youtubers/:id', (req, res) => {
 })
 
 app.get('/youtubers', (req, res) => {
-    var channels = {}
-    db.forEach((value, key) => {
-        channels[key] = value
-    })
-    res.json(channels)
-    
+    let channels = {}
+    if (db.size) {
+        db.forEach((v, k) => {
+        channels[k] = v
+        })
+        res.json(channels)  
+    } else {
+        res.status(404).json({
+            message : "조회할 유튜버가 없습니다."
+        })
+    }
 })
 
 app.post('/youtuber', (req, res)=>{
-    const {channelTitle, subscriber, videoNum} = req.body
-    let tempYoutuber = {
-        channelTitle : channelTitle,
-        subscriber : subscriber,
-        videoNum : videoNum
+    const title = req.body.channelTitle
+    console.log(title)
+    if(title != undefined){
+        db.set(id++ , req.body)
+        res.status(201).json({
+            message: `${db.get(id-1).channelTitle} 님의 유튜버 생활을 응원합니다.`
+        })
+    } else {
+        res.status(400).json({
+            message : '데이터 입력을 다시 해주세요'
+        })
     }
-    db.set(id++ , req.body)
-    res.json({
-        message: `${db.get(id-1).channelTitle} 님의 유튜버 생활을 응원합니다.`
-    })
-    console.log(db)
-
 })
 
 app.delete('/youtubers/:id', (req, res) => {
@@ -81,7 +88,7 @@ app.delete('/youtubers/:id', (req, res) => {
             message : `${name} 님의 계정을 삭제했습니다.`
         })
     } else {
-        res.json({
+        res.status(404).json({
             message : `id 가 ${id}인 유튜버를 찾을 수 없습니다.`
         })
     }    
@@ -100,7 +107,7 @@ app.delete('/youtubers', (req, res) => {
         })
     
     } else{
-        res.json({
+        res.status(404).json({
             message : '삭제할 유튜버가 없습니다.'
         })
     }
@@ -112,7 +119,7 @@ app.put('/youtubers/:id', (req, res) => {
     id = parseInt(id)
     let tempYoutuber = db.get(id)
     if (tempYoutuber == undefined){
-        res.json({
+        res.status(404).json({
             message : "해당 유튜버를 찾을 수 없습니다."
         })
     } else {
